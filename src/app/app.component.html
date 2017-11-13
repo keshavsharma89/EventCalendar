@@ -1,20 +1,104 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
-  <h1>
-    Welcome to {{title}}!
-  </h1>
-  <img width="300" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==">
+<div class="container">
+	<div class="row marginb">
+		<div class="col-sm-6">
+			<button class="btn btn-outline-primary" (click)="addeventpopup(addeventmodal)">Add Event</button>
+			<button class="btn btn-outline-danger" (click)="clearEvents()">Clear All Event</button>
+		</div>
+		<div class="col-sm-4">
+			<input type="text" [(ngModel)]="filterText" placeholder="Search ..." class="form-control">
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-10">
+			<div class="calendar">
+				<div class="header">
+					<div class="col-sm-12">
+						<div class="row">
+							<div class="col-sm-8">
+								<i class="fa fa-calendar" aria-hidden="true"></i>
+								<span>{{month | date:'MMMM, yyyy'}}</span>
+							</div>
+							<div class="col-sm-4">
+								<div class="btn-group">							
+									<button type="button" class="btn btn-outline-primary" (click)="previous()">
+										<i class="fa fa-angle-left"></i> Previous
+									</button>
+									<button type="button" class="btn btn-outline-primary" (click)="curmonth()">Today</button>
+									<button type="button" class="btn btn-outline-primary" (click)="next()">
+										Next <i class="fa fa-angle-right"></i>
+									</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="week names">
+					<span class="day">Sun</span>
+					<span class="day">Mon</span>
+					<span class="day">Tue</span>
+					<span class="day">Wed</span>
+					<span class="day">Thu</span>
+					<span class="day">Fri</span>
+					<span class="day">Sat</span>
+				</div>	
+				<div class="week" *ngFor="let week of weeks">
+					<div class="day" [ngClass]="{today: day.isToday, 'different-month': !day.isCurrentMonth, selected: day.date.isSame(selected) }" (click)="select(day)" *ngFor="let day of week.days">
+						<div class="daynumber">{{day.number}}</div>
+						<div class="eventdiv">
+							<button *ngFor="let event of day.events" type="button" class="btn btn-danger btnmargin" triggers="mouseenter:mouseleave" popoverTitle="{{event.title}}" ngbPopover="{{event.description}}"> {{event.title}} </button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-2">
+			<div class="eventlist">
+				<div class="alert alert-info" role="alert" *ngFor="let event of events  | filter: filterText; let i = index">
+					<strong>{{event.title}} </strong> 
+					<div class="col-sm-12"><i class="text-muted">{{event.date | date:'d MMM,yy'}}</i></div>
+					<p>{{event.description}}</p>
+					<div class="col-sm-12">
+						<a (click)="editeventpopup(i, addeventmodal)"><i class="fa fa-edit"></i></a>
+						<a (click)="deleteevent(i)"><i class="fa fa-trash-o"></i></a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	
+	<ng-template #addeventmodal let-d="dismiss">
+		<div class="modal-header">
+			<h4 class="modal-title" *ngIf="editEventIndex<0">Add Event</h4>
+			<h4 class="modal-title" *ngIf="editEventIndex>=0">Edit Event</h4>
+			<button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+				<span aria-hidden="true">&times;</span>
+			</button>
+		</div>
+		<div class="modal-body">
+			<div class="alert alert-success" *ngIf="eventsaved" role="alert">
+				<strong>All done!</strong> Event successfully saved.
+			</div>
+			<form [formGroup]="rForm">
+				<div class="form-group">
+					<label for="title">Date</label>
+					<input type="text" class="form-control" id="date" name="date" value="{{selected | date: 'MMMM, d yyyy'}}" disabled>
+				</div>
+				
+				<div class="form-group">
+					<label class="form-control-label" for="title">Title</label>
+					<input type="text" class="form-control" [ngClass]="{'is-invalid': !rForm.controls['title'].valid && rForm.controls['title'].touched}" id="title" name="title" formControlName="title">
+					<div class="invalid-feedback" *ngIf="!rForm.controls['title'].valid && rForm.controls['title'].touched">Title field is required.</div>
+				</div>
+				
+				<div class="form-group has-danger">
+					<label class="form-control-label" for="alterEgo">Discription</label>
+					<textarea class="form-control form-control-danger" [ngClass]="{'is-invalid': !rForm.controls['description'].valid && rForm.controls['description'].touched}" id="detail" name="detail" formControlName="description"></textarea>
+					<div class="invalid-feedback" *ngIf="!rForm.controls['description'].valid && rForm.controls['description'].touched">Description field is required.</div>
+				</div>
+				<button type="submit" *ngIf="editEventIndex<0" class="btn btn-success" (click)="addevent(rForm)" [disabled]="!rForm.valid">Add</button>
+				<button type="submit" *ngIf="editEventIndex >= 0" class="btn btn-success" (click)="updateevent(rForm)" [disabled]="!rForm.valid">Update</button>
+			</form>
+		</div>
+	</ng-template>
 </div>
-<h2>Here are some links to help you start: </h2>
-<ul>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://angular.io/tutorial">Tour of Heroes</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://github.com/angular/angular-cli/wiki">CLI Documentation</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://blog.angular.io/">Angular blog</a></h2>
-  </li>
-</ul>
-

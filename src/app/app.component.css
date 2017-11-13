@@ -1,0 +1,95 @@
+.vertical-centre (@height) {
+    height:@height;
+    line-height:@height !important;
+    display:inline-block;
+    vertical-align:middle;
+}
+
+.border-box {
+    box-sizing:border-box;
+    -moz-box-sizing:border-box;
+}
+
+.calendar {
+    float: left;
+    display: block;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    background: white;
+    border: solid 1px #cccccc;
+    margin-bottom: 10px;
+}
+
+.calendar div.header {
+    float: left;
+    width: 100%;
+    background: #d1ecf1;
+    color: #007bff;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    font-size: 1.5em;
+}
+.calendar div.week {
+    float: left;
+    width: 100%;
+    border-top: solid 1px #cccccc;
+}
+
+.week .day {
+    float: left;
+    width: 14.28571429%;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    border-left: solid 1px #cccccc;
+    font-size: 1.5em;
+    text-align: right;
+    height: 85px;
+    line-height: 50px !important;
+    display: inline-block;
+    vertical-align: middle;
+    background: white;
+    cursor: pointer;
+    color: black;
+}
+.week.names .day {
+	text-align: center;
+    height: 50px;
+}
+.popover-header{
+	color:#000!important;
+}
+.daynumber{
+	padding-right: 10px;
+}
+.calendar div.week .different-month {
+    color: #C0C0C0;
+}
+.calendar div.week .day.selected {
+    background: #d1ecf1;
+    color: #007bff;
+}
+.marginb{
+    margin-bottom: 10px;
+	margin-top: 20px;
+}
+.btnmargin{
+    margin-right: 5px;
+}
+.center{
+	text-align: center;
+}
+.eventdiv {
+    margin-bottom: 6px;
+    padding: 5px;
+    display: flex;
+}
+.eventdiv button{
+	flex-grow: 1;
+	padding: 2px 4px;
+	margin-right: 2px;
+	font-size: 11px;
+}
+.eventlist{
+	height: 528px;
+    overflow-y: auto;
+}
